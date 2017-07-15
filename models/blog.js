@@ -81,7 +81,45 @@ router.post('/signup',function(req,res){
 
     })
 })
+//route to remove any user ,to be used by admin only
+router.post('/removeUser',function(req,res){
+    data_body=req.body;
+    signup.destroy({
+        where:{
+            user_email:data_body.user_email
+        }
+    })
+    res.send("User "+data_body.user_email+" has been removed");
+})
 
+
+//route to update password of any user ,to be used by admin only
+router.post('/updatePassword',function(req,res){
+    data_body=req.body;
+    signup.find({
+        where:{
+            user_email:data_body.user_email
+        }
+    }).then((signup)=>{
+        if(signup)
+        {
+            signup.update({
+                user_password:data_body.user_new_password
+            },
+            {
+                where:{
+                   user_email:data_body.user_email 
+                }
+            })
+            res.send("Password Updated for "+data_body.user_email);
+        }
+        else
+        {
+            res.send("User "+data_body.user_email+" doesn't exist");
+        }
+    })
+
+})
 //for log in the user
 router.post('/login',function(req,res){
     data_body=req.body;
@@ -104,6 +142,8 @@ router.post('/login',function(req,res){
     })
 });
 
+
+//route to post the content 
 router.post("/post",function(req,res){ 
     data_body=req.body;
     console.log(data_body);
